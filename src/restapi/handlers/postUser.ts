@@ -4,6 +4,7 @@ import fs from "fs";
 import { v4 as uuidv4 } from "uuid";
 import env from "@constants/env";
 import { User } from "@domain/user";
+import { findUsers } from "@repository/findUsers";
 
 export const postUser: RequestHandler = async (req, res, next) => {
   try {
@@ -14,6 +15,16 @@ export const postUser: RequestHandler = async (req, res, next) => {
     if (!userName || !role) {
       res.status(400).send("User name and role are required.");
       return;
+    }
+    // Validate used name
+    {
+      const users = await findUsers();
+      if (
+        /* username already used */ users.some((user) => user.name === userName)
+      ) {
+        res.status(409).send("Username already used.");
+        return;
+      }
     }
 
     // Prepare JSON content
