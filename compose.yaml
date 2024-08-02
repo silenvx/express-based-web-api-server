@@ -6,3 +6,7 @@ services:
       target: dev
     ports:
       - 3000:3000
+    volumes:
+      - type: bind
+        source: "./data"
+        target: "/data"
