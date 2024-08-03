@@ -5,6 +5,7 @@ import { v4 as uuidv4 } from "uuid";
 import env from "@constants/env";
 import { User } from "@domain/user";
 import { findUsers } from "@repository/findUsers";
+import { validationUser } from "@validations/user";
 
 export const postUser: RequestHandler = async (req, res, next) => {
   try {
@@ -12,8 +13,9 @@ export const postUser: RequestHandler = async (req, res, next) => {
     const { name: userName, role: role }: Partial<User> = req.body;
 
     // Validate required fields
-    if (!userName || !role) {
-      res.status(400).send("User name and role are required.");
+    const err = validationUser({ name: userName, role: role });
+    if (err.hasError) {
+      res.status(400).send(err.message);
       return;
     }
     // Validate used name
