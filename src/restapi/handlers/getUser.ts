@@ -1,5 +1,6 @@
 import { RequestHandler } from "express";
-import { findUsers } from "@repository/findUsers";
+import { } from "@adapter/repository/users";
+import { useFindUser } from "@injection";
 
 export const getUser: RequestHandler = async (req, res, next) => {
   try {
@@ -10,14 +11,9 @@ export const getUser: RequestHandler = async (req, res, next) => {
       return;
     }
 
-    const users = await findUsers();
+    const findUser = useFindUser()
 
-    const user = users.find((user) => user.name === userName);
-
-    if (!user) {
-      res.status(404).send("User not found.");
-      return;
-    }
+    const user = findUser(userName)
 
     res.status(200).json(user);
   } catch (err) {
