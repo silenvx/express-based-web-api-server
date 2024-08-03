@@ -19,3 +19,9 @@ export const findUsers = async () => {
     })
   );
 };
+
+export const findUserByUserName = async (userName: string) => {
+  const users = await findUsers();
+
+  return users.find((user) => user.name === userName);
+};
